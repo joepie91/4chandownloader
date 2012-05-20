@@ -1,3 +1,19 @@
 #!/usr/bin/python
 
-# Regex: href="\/\/images\.4chan\.org\/b\/src\/[0-9]+\.jpg"
+import re, urllib2
+
+regex = 'href="(\/\/images\.4chan\.org\/b\/src\/[0-9]+\.jpg)"'
+url = 'http://boards.4chan.org/b/res/400860795'
+
+page = urllib2.urlopen(url).read()
+
+search = re.compile(regex)
+matches = search.finditer(page)
+
+urls = []
+
+for match in matches:
+	if match.group(1) not in urls:
+		urls.append(match.group(1))
+
+print urls
