@@ -7,7 +7,7 @@ import re, urllib, urllib2, argparse, os
 
 parser = argparse.ArgumentParser(description='Downloads all full-size images in an arbitrary 4chan thread.')
 
-parser.add_argument('urllist', metavar='url', type=str, nargs=1,
+parser.add_argument('urllist', metavar='url', type=str, nargs='+',
                    help='the URL of the thread')
 parser.add_argument('-n', '--newdir', dest='newdir', action='store_true',
                    help='create a new directory for this thread in the current directory')
@@ -18,48 +18,50 @@ args = parser.parse_args()
 options = vars(args)
 
 regex = 'href="(\/\/images\.4chan\.org\/b\/src\/[0-9]+\.[a-z]+)"'
-url = options['urllist'][0]
 
-try:
-	page = urllib2.urlopen(url).read()
-except ValueError:
-	print "That does not look like a valid URL."
-	exit(1)
-except urllib2.HTTPError:
-	print "The given URL returns a HTTP 404 status code - the thread may have died."
-	exit(1)
-
-if options['newdir'] == True:
-	thread_id = url.split('/')[-1]
-	target_dir = "%s/" % thread_id
-
-	if not os.path.exists(thread_id):
-		os.makedirs(thread_id)
-else:
-	target_dir = ""
-
-search = re.compile(regex)
-matches = search.finditer(page)
-
-urls = []
-
-for match in matches:
-	if match.group(1) not in urls:
-		urls.append(match.group(1))
-
-current = 1
-total = len(urls)
-
-print "Parsed thread. Total images: %d" % total
-
-for downloadurl in urls:
-	downloadurl = "http:%s" % downloadurl
-	filename = downloadurl.split('/')[-1]
-	path = target_dir + filename
+for url in options['urllist']:
+	print "Thread URL: %s" % url
 	
-	if os.path.exists(path) and options['force_redownload'] == False:
-		print "Skipped existing file %s (%d/%d)." % (filename, current, total)
+	try:
+		page = urllib2.urlopen(url).read()
+	except ValueError:
+		print "That does not look like a valid URL."
+		exit(1)
+	except urllib2.HTTPError:
+		print "The given URL returns a HTTP 404 status code - the thread may have died."
+		exit(1)
+
+	if options['newdir'] == True:
+		thread_id = url.split('/')[-1]
+		target_dir = "%s/" % thread_id
+
+		if not os.path.exists(thread_id):
+			os.makedirs(thread_id)
 	else:
-		urllib.urlretrieve(downloadurl, path)
-		print "Downloaded %s (%d/%d)." % (filename, current, total)
-	current += 1
+		target_dir = ""
+
+	search = re.compile(regex)
+	matches = search.finditer(page)
+
+	urls = []
+
+	for match in matches:
+		if match.group(1) not in urls:
+			urls.append(match.group(1))
+
+	current = 1
+	total = len(urls)
+
+	print "Parsed thread. Total images: %d" % total
+
+	for downloadurl in urls:
+		downloadurl = "http:%s" % downloadurl
+		filename = downloadurl.split('/')[-1]
+		path = target_dir + filename
+		
+		if os.path.exists(path) and options['force_redownload'] == False:
+			print "Skipped existing file %s (%d/%d)." % (filename, current, total)
+		else:
+			urllib.urlretrieve(downloadurl, path)
+			print "Downloaded %s (%d/%d)." % (filename, current, total)
+		current += 1
