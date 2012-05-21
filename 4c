@@ -5,12 +5,12 @@
 
 import re, urllib, urllib2, argparse, os
 
-parser = argparse.ArgumentParser(description='Downloads all full-size images in an arbitrary 4chan thread.')
+parser = argparse.ArgumentParser(description='Downloads all full-size images one or more arbitrary 4chan threads.')
 
 parser.add_argument('urllist', metavar='url', type=str, nargs='+',
-                   help='the URL of the thread')
+                   help='the URLs of the threads')
 parser.add_argument('-n', '--newdir', dest='newdir', action='store_true',
-                   help='create a new directory for this thread in the current directory')
+                   help='create a new directory for each thread in the current directory')
 parser.add_argument('-f', '--force', dest='force_redownload', action='store_true',
                    help='force redownloading every image, overwriting it if it already exists')
                    
