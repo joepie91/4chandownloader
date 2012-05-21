@@ -26,10 +26,10 @@ for url in options['urllist']:
 		page = urllib2.urlopen(url).read()
 	except ValueError:
 		print "That does not look like a valid URL."
-		exit(1)
+		continue
 	except urllib2.HTTPError:
 		print "The given URL returns a HTTP 404 status code - the thread may have died."
-		exit(1)
+		continue
 
 	if options['newdir'] == True:
 		thread_id = url.split('/')[-1]
