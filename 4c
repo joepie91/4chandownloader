@@ -52,7 +52,7 @@ for url in options['urllist']:
 	current = 1
 	total = len(urls)
 
-	print "Parsed thread. Total images: %d" % total
+	print "  Parsed thread. Total images: %d" % total
 
 	for downloadurl in urls:
 		downloadurl = "http:%s" % downloadurl
@@ -65,3 +65,5 @@ for url in options['urllist']:
 			urllib.urlretrieve(downloadurl, path)
 			print "Downloaded %s (%d/%d)." % (filename, current, total)
 		current += 1
+	
+	print "Done."
