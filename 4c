@@ -8,6 +8,8 @@ parser.add_argument('urllist', metavar='url', type=str, nargs=1,
                    help='the URL of the thread')
 parser.add_argument('-n', '--newdir', dest='newdir', action='store_true',
                    help='create a new directory for this thread in the current directory')
+parser.add_argument('-f', '--force', dest='force_redownload', action='store_true',
+                   help='force redownloading every image, overwriting it if it already exists')
                    
 args = parser.parse_args()
 options = vars(args)
@@ -51,6 +53,10 @@ for downloadurl in urls:
 	downloadurl = "http:%s" % downloadurl
 	filename = downloadurl.split('/')[-1]
 	path = target_dir + filename
-	urllib.urlretrieve(downloadurl, path)
-	print "Downloaded %s (%d/%d)." % (filename, current, total)
+	
+	if os.path.exists(path) and options['force_redownload'] == False:
+		print "Skipped existing file %s (%d/%d)." % (filename, current, total)
+	else:
+		urllib.urlretrieve(downloadurl, path)
+		print "Downloaded %s (%d/%d)." % (filename, current, total)
 	current += 1
