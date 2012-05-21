@@ -5,7 +5,7 @@
 
 import re, urllib, urllib2, argparse, os
 
-parser = argparse.ArgumentParser(description='Downloads all full-size images one or more arbitrary 4chan threads.')
+parser = argparse.ArgumentParser(description='Downloads all full-size images in one or more arbitrary 4chan threads.')
 
 parser.add_argument('urllist', metavar='url', type=str, nargs='+',
                    help='the URLs of the threads')
