@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# Protip: want to monitor a thread and download all new images every 5 seconds?
+# while x=0; do 4c [-nf] url; sleep 5; done
+
 import re, urllib, urllib2, argparse, os
 
 parser = argparse.ArgumentParser(description='Downloads all full-size images in an arbitrary 4chan thread.')
